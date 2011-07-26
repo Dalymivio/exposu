@@ -38,18 +38,26 @@ class MainHandler(webapp.RequestHandler):
 		self.response.out.write(template.render(path, template_values))
 	
 	def post(self):
-		#print MainHandler.e1.iso
-		#print MainHandler.e1.intensity()
-		MainHandler.e1.set(
+		# Read values added and store them
+		# inserting odd/blank values will throw errors so swap them for defaults
+		try:
+			MainHandler.e1.set(
 						float(self.request.get('aperture1')),
 						float(self.request.get('shutter1')),
 						int(self.request.get('iso1'))
 						)
-		MainHandler.e2.set(
+		except ValueError:
+			MainHandler.e1.set(4.0, 100, 100)
+		
+		try:
+			MainHandler.e2.set(
 						float(self.request.get('aperture2')),
 						float(self.request.get('shutter2')),
 						int(self.request.get('iso2'))
 						)
+		except ValueError:
+			MainHandler.e2.set(4.0, 100, 100)
+
 		self.redirect('/')
 
 
